@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useWiki } from '../context/useWiki';
-import { Search, Sparkles, BookOpen, Clock, Dice5, Shield, Compass, ChevronLeft, ChevronRight, Database } from 'lucide-react';
+import { Search, Sparkles, BookOpen, Clock, Dice5, Compass, ChevronLeft, ChevronRight, Database } from 'lucide-react';
 import { hexToRgb } from '../utils/colorTheme';
 
 interface WikiLayoutProps {
