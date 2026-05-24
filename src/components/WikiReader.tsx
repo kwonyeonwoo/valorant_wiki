@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWiki } from '../context/useWiki';
-import { Edit2, History, Trash2, Eye, FileWarning } from 'lucide-react';
+import { Edit2, History, Trash2, Eye, FileWarning, Sparkles } from 'lucide-react';
 import { AgentHUD } from './AgentHUD';
 import { hexToRgb } from '../utils/colorTheme';
 
@@ -165,7 +165,60 @@ export const WikiReader: React.FC = () => {
     );
   }
 
-  // 3. Standard Wiki Reader view (like Namuwiki)
+  // 3. Home page — hero banner + standard wiki card
+  if (article.title === '대문') {
+    return (
+      <div className="fade-in">
+        <div className="home-hero">
+          <div className="home-hero-inner">
+            <p className="home-hero-badge">Fan Creative Wiki</p>
+            <h1 className="home-hero-title">
+              VALO<span className="home-hero-title-accent">WIKI</span>
+            </h1>
+            <p className="home-hero-subtitle">
+              발로란트 세계관을 기반으로 창작한 요원들을 기록하는 위키 공간입니다.
+              직접 요원을 만들고, 편집하며, 세계관을 함께 넓혀가세요.
+            </p>
+            <div className="home-hero-cta">
+              <button
+                className="val-btn val-btn-accent"
+                style={{ padding: '11px 22px', fontSize: '13px' }}
+                onClick={() => setViewMode('wizard')}
+              >
+                <Sparkles size={14} />
+                요원 생성 마법사
+              </button>
+            </div>
+          </div>
+          <div className="home-hero-divider" />
+        </div>
+
+        <div className="wiki-card">
+          <div className="wiki-title-container">
+            <h1 className="wiki-title">
+              대문
+              <span className="wiki-category-tag">일반 문서</span>
+            </h1>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="val-btn" onClick={triggerEditMode}><Edit2 size={12} /> 편집</button>
+              <button className="val-btn" onClick={triggerHistoryMode}><History size={12} /> 역사</button>
+            </div>
+          </div>
+          <div
+            className="wiki-content"
+            onClick={handleContentClick}
+            dangerouslySetInnerHTML={{ __html: parseWikiText(article.content) }}
+          />
+          <div style={{ marginTop: '40px', paddingTop: '16px', borderTop: '1px solid var(--border-color)', fontSize: '11px', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
+            <span>분류: 발로란트 창작 위키 ({article.category})</span>
+            <span>최근 수정 시각: {new Date(article.updatedAt).toLocaleString('ko-KR')}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 4. Standard Wiki Reader view (like Namuwiki)
   return (
     <div className="wiki-card fade-in" style={agentThemeStyle}>
       {/* Article Navigation Header */}

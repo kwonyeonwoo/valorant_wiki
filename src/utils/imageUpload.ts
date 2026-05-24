@@ -1,3 +1,12 @@
+import { isCloudinaryReady, uploadToCloudinary } from '../lib/cloudinary';
+
+export const uploadImage = async (file: File): Promise<string> => {
+  if (isCloudinaryReady()) {
+    return uploadToCloudinary(file);
+  }
+  return imageFileToDataUrl(file);
+};
+
 export const imageFileToDataUrl = (file: File, maxSize = 900): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {

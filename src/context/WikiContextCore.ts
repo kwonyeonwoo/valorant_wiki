@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import type { AgentData, Article } from '../data/initialArticles';
 
 export type ViewMode = 'read' | 'edit' | 'history' | 'wizard';
+export type DbStatus = 'initializing' | 'connected' | 'offline';
 
 export interface Revision {
   version: number;
@@ -31,6 +32,7 @@ export interface WikiContextType {
   deleteArticle: (title: string) => void;
   rollbackToVersion: (title: string, version: number) => void;
   recentChanges: Array<{ title: string; updatedAt: string; comment: string; author: string; version: number }>;
+  dbStatus: DbStatus;
 }
 
 export const WikiContext = createContext<WikiContextType | undefined>(undefined);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useWiki } from '../context/useWiki';
 import { Sparkles, ArrowLeft, ArrowRight, Save, User, Swords, Scroll, ImagePlus } from 'lucide-react';
 import type { Ability, AgentData } from '../data/initialArticles';
-import { imageFileToDataUrl } from '../utils/imageUpload';
+import { uploadImage } from '../utils/imageUpload';
 import { textToLines, textToRelationships } from '../utils/agentText';
 
 type AbilityKey = 'C' | 'Q' | 'E' | 'X';
@@ -37,6 +37,7 @@ export const AgentWizard: React.FC = () => {
   const [portraitPreset, setPortraitPreset] = useState('/glint.png');
   const [portraitFileName, setPortraitFileName] = useState('');
   const [portraitError, setPortraitError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const [abilityC, setAbilityC] = useState<AbilityDraft>({ name: '', cost: '100 크레드', charges: '2개', description: '', image: '', voiceLines: '' });
   const [abilityQ, setAbilityQ] = useState<AbilityDraft>({ name: '', cost: '200 크레드', charges: '2개', description: '', image: '', voiceLines: '' });
@@ -82,25 +83,31 @@ export const AgentWizard: React.FC = () => {
 
     if (!file) return;
 
+    setIsUploading(true);
     try {
-      const dataUrl = await imageFileToDataUrl(file);
-      setPortrait(dataUrl);
+      const url = await uploadImage(file);
+      setPortrait(url);
       setPortraitPreset('custom');
       setPortraitFileName(file.name);
       setPortraitError('');
     } catch (error) {
       setPortraitError(error instanceof Error ? error.message : '이미지를 읽을 수 없습니다.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const handleAbilityImageUpload = async (key: AbilityKey, file?: File) => {
     if (!file) return;
 
+    setIsUploading(true);
     try {
-      const dataUrl = await imageFileToDataUrl(file);
-      abilitySetters[key](prev => ({ ...prev, image: dataUrl }));
+      const url = await uploadImage(file);
+      abilitySetters[key](prev => ({ ...prev, image: url }));
     } catch {
       alert('스킬 아이콘 이미지를 읽을 수 없습니다.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -110,10 +117,13 @@ export const AgentWizard: React.FC = () => {
 
     if (!file) return;
 
+    setIsUploading(true);
     try {
-      setFadeLetterImage(await imageFileToDataUrl(file));
+      setFadeLetterImage(await uploadImage(file));
     } catch {
       alert('페이드 협박편지 이미지를 읽을 수 없습니다.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -448,8 +458,8 @@ ${tipsList.map(tip => `* ${tip}`).join('\n')}
               다음 단계 <ArrowRight size={12} />
             </button>
           ) : (
-            <button type="submit" className="val-btn val-btn-accent" style={{ background: 'var(--color-teal)', borderColor: 'var(--color-teal)' }}>
-              <Save size={12} /> 요원 위키 등록!
+            <button type="submit" className="val-btn val-btn-accent" disabled={isUploading} style={{ background: 'var(--color-teal)', borderColor: 'var(--color-teal)' }}>
+              <Save size={12} /> {isUploading ? '이미지 업로드 중...' : '요원 위키 등록!'}
             </button>
           )}
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useWiki } from '../context/useWiki';
-import { Search, Sparkles, BookOpen, Clock, Dice5, Shield, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Sparkles, BookOpen, Clock, Dice5, Shield, Compass, ChevronLeft, ChevronRight, Database } from 'lucide-react';
 import { hexToRgb } from '../utils/colorTheme';
 
 interface WikiLayoutProps {
@@ -12,7 +12,8 @@ export const WikiLayout: React.FC<WikiLayoutProps> = ({ children }) => {
     articles,
     recentChanges,
     navigateToPage,
-    activePage
+    activePage,
+    dbStatus,
   } = useWiki();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -131,6 +132,15 @@ export const WikiLayout: React.FC<WikiLayoutProps> = ({ children }) => {
 
         {/* Top bar operations */}
         <div className="navbar-actions">
+          {/* DB status indicator */}
+          <div className="db-status-badge" title={
+            dbStatus === 'connected' ? 'Supabase 연결됨'
+            : dbStatus === 'offline' ? 'DB 연결 없음 (로컬 전용)'
+            : 'DB 연결 중...'
+          }>
+            <Database size={13} />
+            <span className={`db-status-dot db-status-${dbStatus}`} />
+          </div>
           <button className="val-btn" onClick={handleRandomPage}>
             <Dice5 size={14} />
             랜덤
@@ -185,24 +195,6 @@ export const WikiLayout: React.FC<WikiLayoutProps> = ({ children }) => {
               >
                 <span className="recent-change-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <BookOpen size={14} /> 대문 (Wiki Home)
-                </span>
-              </div>
-              <div 
-                className="recent-change-item" 
-                onClick={() => navigateToPage('빛샘')}
-                style={{ padding: '10px 12px' }}
-              >
-                <span className="recent-change-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Shield size={14} /> 빛샘 (Glint) - 전략가
-                </span>
-              </div>
-              <div 
-                className="recent-change-item" 
-                onClick={() => navigateToPage('해저드')}
-                style={{ padding: '10px 12px' }}
-              >
-                <span className="recent-change-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Shield size={14} /> 해저드 (Hazard) - 감시자
                 </span>
               </div>
             </div>
